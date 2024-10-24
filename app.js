@@ -3,6 +3,7 @@ const express = require('express')
 const connectDB = require('./config/db')
 const errorHandler = require('./middlewares/errorMiddleware')
 const itemRoutes = require('./routes/itemRoute')
+const authRoutes = require('./routes/authRoute')
 
 
 const app = express();
@@ -15,7 +16,7 @@ connectDB();
 
 // Routes
 app.use('/api/item', itemRoutes);
-
+app.use("/api/user", authRoutes);
 
 // Error Handling Middleware
 app.use(errorHandler);
