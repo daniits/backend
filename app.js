@@ -4,7 +4,7 @@ const connectDB = require('./config/db')
 const errorHandler = require('./middlewares/errorMiddleware')
 const itemRoutes = require('./routes/itemRoute')
 const authRoutes = require('./routes/authRoute')
-
+// const { generateToken } = require('./utils/jwtUtils');
 
 const app = express();
 
