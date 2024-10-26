@@ -1,14 +1,13 @@
 require('dotenv').config();
-const express = require('express')
-const connectDB = require('./config/db')
-const errorHandler = require('./middlewares/errorMiddleware')
-const itemRoutes = require('./routes/itemRoute')
-const authRoutes = require('./routes/authRoute')
-// const { generateToken } = require('./utils/jwtUtils');
+const express = require('express');
+const connectDB = require('./config/db');
+const errorHandler = require('./middlewares/errorMiddleware');
+const itemRoutes = require('./routes/itemRoute');
+const authRoutes = require('./routes/authRoute');
 
 const app = express();
 
-// Middelware
+// Middleware
 app.use(express.json());
 
 // Connect to Database
@@ -21,12 +20,12 @@ app.use("/api/user", authRoutes);
 // Error Handling Middleware
 app.use(errorHandler);
 
-// Define the port number; you can set this in your .env-file or default to 4000
+// Set port from environment or default to 4000
 const PORT = process.env.PORT || 4000;
 
-// Start the Server and Listen on the specified port 
+// Start the server
 app.listen(PORT, () => {
-    console.log(`Server Started at http://localhost:${PORT}`)
+    console.log(`Server running at http://localhost:${PORT}`);
 });
 
 module.exports = app;

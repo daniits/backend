@@ -21,6 +21,15 @@ const sendVerificationEmail = async (userName, email, verificationToken) => {
     });
 };
 
+const sendPasswordResetEmail = async (email, otp) => {
+    await transporter.sendMail({
+        from: process.env.EMAIL,
+        to: email,
+        subject: 'Password Reset OTP',
+        html: `<p>Your OTP for password reset is <b>${otp}</b>. It is valid for 10 minutes.</p>`
+    });
+};
+
 // Generate a JWT token for verification
 const generateVerificationToken = (email) => {
     return jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1d' });
@@ -30,4 +39,5 @@ module.exports = {
     hashPassword,
     sendVerificationEmail,
     generateVerificationToken,
+    sendPasswordResetEmail
 };
