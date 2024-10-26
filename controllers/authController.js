@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const Auth = require('../models/authModel');
@@ -7,11 +9,11 @@ const dns = require('dns');
 
 // Set up your mail transport (Gmail, SMTP, etc.)
 const transporter = nodemailer.createTransport({
-    service: 'Gmail',  // You can use other services or SMTP
+    service: 'Gmail',
     auth: {
-        user: process.env.EMAIL,  // Your email
-        pass: process.env.EMAIL_PASSWORD  // Your email password
-    }
+        user: process.env.EMAIL0,
+        pass: process.env.EMAIL_PASSWORD, 
+    },
 });
 
 // Generate a verification token
