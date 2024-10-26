@@ -1,6 +1,7 @@
-// models/authModel.js
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
+// Define schema for user authentication
 const AuthSchema = new mongoose.Schema({
     userName: {
         type: String,
@@ -9,26 +10,28 @@ const AuthSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true,  
+        unique: true,
     },
     password: {
         type: String,
         required: true,
+        select: false,  
     },
     isVerified: {
         type: Boolean,
-        default: false, 
+        default: false,
     },
-    verificationToken: {
-        type: String,
-    },
-    verificationTokenExpires: {
-        type: Date,
-    },
+    verificationToken: String,
+    verificationTokenExpires: Date,
+    resetOTP: String,
+    resetOTPExpires: Date,
 }, {
-    timestamps: true 
+    timestamps: true  
 });
 
-const Auth = mongoose.model('Auth', AuthSchema);
+// Compare input password with hashed password
+AuthSchema.methods.matchPassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+};
 
-module.exports = Auth;
+module.exports = mongoose.model('Auth', AuthSchema);
