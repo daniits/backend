@@ -1,11 +1,13 @@
 const jwt = require('jsonwebtoken');
 
-// Helper function to create a JWT token
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '30d',
-    });
+// Generate a JWT token
+const generateToken = (payload, expiresIn = '1d') => {
+    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
 };
 
-// Export the function to make it reusable
-module.exports = { generateToken };
+// Verify a JWT token
+const verifyToken = (token) => {
+    return jwt.verify(token, process.env.JWT_SECRET);
+};
+
+module.exports = { generateToken, verifyToken };
