@@ -6,22 +6,25 @@ const itemRoutes = require('./routes/itemRoute');
 const authRoutes = require('./routes/authRoute');
 const cors = require('cors');
 
-
 const app = express();
 
-
-// CROS Error Resolve 
+// CORS Middleware
 app.use(cors());
 
-// Middleware
+// Middleware for parsing JSON
 app.use(express.json());
 
 // Connect to Database
 connectDB();
 
+// Define a Root Route (This will handle requests to the root URL)
+app.get('/', (req, res) => {
+    res.send('Backend is working! Welcome to the API.');
+});
+
 // Routes
 app.use('/api/item', itemRoutes);
-app.use("/api/user", authRoutes);
+app.use('/api/user', authRoutes);
 
 // Error Handling Middleware
 app.use(errorHandler);
