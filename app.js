@@ -14,13 +14,8 @@ app.use(cors());
 // Middleware for parsing JSON
 app.use(express.json());
 
-// Connect to Database
+// Connect to Database (call once during initialization)
 connectDB();
-
-// Define a Root Route (This will handle requests to the root URL)
-app.get('/', (req, res) => {
-    res.send('Backend is working! Welcome to the API.');
-});
 
 // Routes
 app.use('/api/item', itemRoutes);
