@@ -4,8 +4,14 @@ const connectDB = require('./config/db');
 const errorHandler = require('./middlewares/errorMiddleware');
 const itemRoutes = require('./routes/itemRoute');
 const authRoutes = require('./routes/authRoute');
+const cors = require('cors');
+
 
 const app = express();
+
+
+// CROS Error Resolve 
+app.use(cors());
 
 // Middleware
 app.use(express.json());

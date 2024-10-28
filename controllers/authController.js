@@ -4,6 +4,7 @@ const { hashPassword, sendVerificationEmail, generateVerificationToken, sendPass
 const disposableDomains = require('disposable-email-domains');
 const Joi = require('joi');
 const rateLimit = require('express-rate-limit');
+const clientUrl = process.env.CLIENT_URL;
 
 // Define rate limiter for sensitive routes (e.g., OTP verification)
 const otpRateLimiter = rateLimit({
@@ -89,7 +90,8 @@ const verifyEmail = async (req, res, next) => {
         user.verificationTokenExpires = undefined;
         await user.save();
 
-        res.status(200).json({ message: 'Email verified successfully.' });
+        return res.redirect(`${clientUrl}`);
+
     } catch (error) {
         next(error);
     }
@@ -158,7 +160,7 @@ const requestPasswordReset = async (req, res, next) => {
 
 // OTP verification (using rate limiter)
 const verifyOtp = [
-    otpRateLimiter, // Apply rate limiting
+    otpRateLimiter, 
     async (req, res, next) => {
         try {
             const { email, otp } = req.body;
