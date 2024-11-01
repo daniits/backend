@@ -15,7 +15,12 @@ const AuthSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        select: false,  
+        select: false,
+    },
+    role: {
+        type: String,
+        enum: ['User', 'Agent', 'Admin'], // Define allowed roles
+        default: 'User'
     },
     isVerified: {
         type: Boolean,
@@ -26,7 +31,7 @@ const AuthSchema = new mongoose.Schema({
     resetOTP: String,
     resetOTPExpires: Date,
 }, {
-    timestamps: true  
+    timestamps: true
 });
 
 // Compare input password with hashed password

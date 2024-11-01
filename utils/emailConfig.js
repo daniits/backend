@@ -1,15 +1,28 @@
 const nodemailer = require('nodemailer');
 
-const transporter = nodemailer.createTransport({
+
+console.log({
     host: process.env.SMTP_HOST,
     port: process.env.SMTP_PORT,
-    secure: process.env.SMTP_SECURE === 'true',
+    secure: process.env.SMTP_SECURE,
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASSWORD ? 'Loaded' : 'Not Loaded'
+});
+const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    requireTLS: true,
     auth: {
         user: process.env.EMAIL,
         pass: process.env.EMAIL_PASSWORD
     },
-    logger: true, // Enable detailed SMTP logging for debugging
-    debug: true    // Enable debugging output to console
+    logger: true,
+    debug: true,
+    connectionTimeout: 60000, // 60 seconds
+    socketTimeout: 60000, // 60 seconds
+    greetingTimeout: 30000 // 30 seconds
 });
+
 
 module.exports = transporter;

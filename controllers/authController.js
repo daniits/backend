@@ -27,48 +27,33 @@ const signUpSchema = Joi.object({
 });
 
 // Signup function
-const signUp = async (req, res, next) => {
+const signUp = async (req, res) => {
     try {
-        // Validate request body
-        const { error } = signUpSchema.validate(req.body);
-        if (error) return res.status(400).json({ message: error.details[0].message });
+        const { userName, email, password, role } = req.body;
 
-        const { userName, email, password } = req.body;
-
-        if (isDisposableEmail(email)) {
-            return res.status(400).json({ message: 'Disposable email addresses are not allowed' });
-        }
-
-        const userExists = await Auth.findOne({ email });
-        if (userExists) {
-            return res.status(400).json({ message: 'User already exists' });
+        // Restrict role to 'Agent' or 'User' only
+        if (role !== 'Agent' && role !== 'User') {
+            return res.status(400).json({ message: 'Invalid role. Only Agent and User roles are allowed.' });
         }
 
         const hashedPassword = await hashPassword(password);
         const verificationToken = generateVerificationToken(email);
 
-        const user = await Auth.create({
+        const newUser = new Auth({
             userName,
             email,
             password: hashedPassword,
+            role,  // Only 'Agent' or 'User' will be assigned
             verificationToken,
-            verificationTokenExpires: Date.now() + 24 * 60 * 60 * 1000,
+            isVerified: false
         });
 
+        await newUser.save();
         await sendVerificationEmail(userName, email, verificationToken);
 
-        res.status(201).json({
-            success: true,
-            message: 'Signup successful. Check your email to verify your account.',
-            data: {
-                _id: user._id,
-                userName: user.userName,
-                email: user.email,
-                token: generateToken({ userId: user._id })
-            }
-        });
+        res.status(201).json({ message: 'User registered successfully. Please verify your email.', user: newUser });
     } catch (error) {
-        next(error);
+        res.status(500).json({ message: 'Error registering user', error: error.message });
     }
 };
 
@@ -102,11 +87,14 @@ const signIn = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
+        
+
         if (!email || !password) {
             return res.status(400).json({ message: 'Please provide both email and password' });
         }
 
         const user = await Auth.findOne({ email }).select('+password');
+
         if (!user || !(await user.matchPassword(password)) || !user.isVerified) {
             return res.status(401).json({ message: 'Invalid credentials or unverified account' });
         }
@@ -117,6 +105,7 @@ const signIn = async (req, res, next) => {
                 _id: user._id,
                 userName: user.userName,
                 email: user.email,
+                role: user.role,
                 token: generateToken({ userId: user._id })
             }
         });
